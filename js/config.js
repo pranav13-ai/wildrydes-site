@@ -5,6 +5,6 @@ window._config = {
         region: 'us-east-1'
     },
     api: {
-        invokeUrl: '' // keep empty for now (we will fill after API Gateway step)
+        invokeUrl: 'https://yzzfeo0vwe.execute-api.us-east-1.amazonaws.com/prod' // keep empty for now (we will fill after API Gateway step)
     }
 };

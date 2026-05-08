@@ -47,7 +47,6 @@ var WildRydes = window.WildRydes || {};
         }
     });
 
-
     /*
      * Cognito User Pool functions
      */
@@ -57,9 +56,14 @@ var WildRydes = window.WildRydes || {};
             Name: 'email',
             Value: email
         };
+
         var attributeEmail = new AmazonCognitoIdentity.CognitoUserAttribute(dataEmail);
 
-        userPool.signUp(toUsername(email), password, [attributeEmail], null,
+        userPool.signUp(
+            toUsername(email),
+            password,
+            [attributeEmail],
+            null,
             function signUpCallback(err, result) {
                 if (!err) {
                     onSuccess(result);
@@ -77,6 +81,7 @@ var WildRydes = window.WildRydes || {};
         });
 
         var cognitoUser = createCognitoUser(email);
+
         cognitoUser.authenticateUser(authenticationDetails, {
             onSuccess: onSuccess,
             onFailure: onFailure
@@ -84,13 +89,17 @@ var WildRydes = window.WildRydes || {};
     }
 
     function verify(email, code, onSuccess, onFailure) {
-        createCognitoUser(email).confirmRegistration(code, true, function confirmCallback(err, result) {
-            if (!err) {
-                onSuccess(result);
-            } else {
-                onFailure(err);
+        createCognitoUser(email).confirmRegistration(
+            code,
+            true,
+            function confirmCallback(err, result) {
+                if (!err) {
+                    onSuccess(result);
+                } else {
+                    onFailure(err);
+                }
             }
-        });
+        );
     }
 
     function createCognitoUser(email) {
@@ -100,14 +109,13 @@ var WildRydes = window.WildRydes || {};
         });
     }
 
+    // FIXED FUNCTION
     function toUsername(email) {
-    return email;
-}
-        return email.replace('@', '-at-');
+        return email;
     }
 
     /*
-     *  Event Handlers
+     * Event Handlers
      */
 
     $(function onDocReady() {
@@ -119,8 +127,12 @@ var WildRydes = window.WildRydes || {};
     function handleSignin(event) {
         var email = $('#emailInputSignin').val();
         var password = $('#passwordInputSignin').val();
+
         event.preventDefault();
-        signin(email, password,
+
+        signin(
+            email,
+            password,
             function signinSuccess() {
                 console.log('Successfully Logged In');
                 window.location.href = 'ride.html';
@@ -138,15 +150,19 @@ var WildRydes = window.WildRydes || {};
 
         var onSuccess = function registerSuccess(result) {
             var cognitoUser = result.user;
+
             console.log('user name is ' + cognitoUser.getUsername());
-            var confirmation = ('Registration successful. Please check your email inbox or spam folder for your verification code.');
-            if (confirmation) {
-                window.location.href = 'verify.html';
-            }
+
+            alert('Registration successful. Please check your email for verification code.');
+
+            // REDIRECT TO VERIFY PAGE
+            window.location.href = 'verify.html';
         };
+
         var onFailure = function registerFailure(err) {
             alert(err);
         };
+
         event.preventDefault();
 
         if (password === password2) {
@@ -159,12 +175,18 @@ var WildRydes = window.WildRydes || {};
     function handleVerify(event) {
         var email = $('#emailInputVerify').val();
         var code = $('#codeInputVerify').val();
+
         event.preventDefault();
-        verify(email, code,
+
+        verify(
+            email,
+            code,
             function verifySuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
-                alert('Verification successful. You will now be redirected to the login page.');
+
+                alert('Verification successful. You will now be redirected to login.');
+
                 window.location.href = signinUrl;
             },
             function verifyError(err) {
@@ -172,4 +194,5 @@ var WildRydes = window.WildRydes || {};
             }
         );
     }
+
 }(jQuery));
